@@ -2,6 +2,7 @@ package beanstream
 
 import (
 	"beanstream/httpMethods"
+	//"beanstream/paymentMethods"
 	"fmt"
 	"time"
 )
@@ -73,17 +74,18 @@ func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentRe
 }
 
 type PaymentRequest struct {
-	PaymentMethod string     `json:"payment_method"`
-	OrderNumber   string     `json:"order_number"`
-	Amount        float32    `json:"amount"`
-	Card          CreditCard `json:"card"`
-}
-
-type PaymentRequestToken struct {
-	PaymentMethod string  `json:"payment_method"`
-	OrderNumber   string  `json:"order_number"`
-	Amount        float32 `json:"amount"`
-	Token         Token   `json:"token"`
+	PaymentMethod   string       `json:"payment_method"`
+	OrderNumber     string       `json:"order_number,omitempty"`
+	Amount          float32      `json:"amount"`
+	Card            CreditCard   `json:"card,omitempty"`
+	Token           Token        `json:"token,omitempty"`
+	BillingAddress  Address      `json:"billing,omitempty"`
+	ShippingAddress Address      `json:"shipping,omitempty"`
+	Comment         string       `json:"comments,omitempty"`
+	Language        string       `json:"language,omitempty"`
+	CustomerIp      string       `json:"customer_ip,omitempty"`
+	TermUrl         string       `json:"term_url,omitempty"`
+	Custom          CustomFields `json:"custom,omitempty"`
 }
 
 type CreditCard struct {
@@ -101,18 +103,6 @@ type Token struct {
 	Complete bool   `json:"complete"`
 }
 
-type CashPayment struct {
-	PaymentMethod string  `json:"payment_method"`
-	OrderNumber   string  `json:"order_number"`
-	Amount        float32 `json:"amount"`
-}
-
-type ChequePayment struct {
-	PaymentMethod string  `json:"payment_method"`
-	OrderNumber   string  `json:"order_number"`
-	Amount        float32 `json:"amount"`
-}
-
 type completionRequest struct {
 	Amount float32 `json:"amount"`
 }
@@ -123,6 +113,26 @@ type voidRequest struct {
 
 type returnRequest struct {
 	Amount float32 `json:"amount"`
+}
+
+type Address struct {
+	Name         string `json:"name,omitempty"`
+	AddressLine1 string `json:"address_line1,omitempty"`
+	AddressLine2 string `json:"address_line2,omitempty"`
+	City         string `json:"city,omitempty"`
+	Province     string `json:"province,omitempty"`
+	Country      string `json:"country,omitempty"`
+	PostalCode   string `json:"postal_code,omitempty"`
+	PhoneNumber  string `json:"phone_number,omitempty"`
+	EmailAddress string `json:"email_address,omitempty"`
+}
+
+type CustomFields struct {
+	Ref1 string `json:"ref1,omitempty"`
+	Ref2 string `json:"ref2,omitempty"`
+	Ref3 string `json:"ref3,omitempty"`
+	Ref4 string `json:"ref4,omitempty"`
+	Ref5 string `json:"ref5,omitempty"`
 }
 
 // JSON:

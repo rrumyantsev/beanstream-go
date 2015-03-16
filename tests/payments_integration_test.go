@@ -23,13 +23,27 @@ func createGateway() beanstream.Gateway {
 	return beanstream.Gateway{config}
 }
 
+func createCardRequest() beanstream.PaymentRequest {
+	return beanstream.PaymentRequest{
+		PaymentMethod: paymentMethods.CARD,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        79.99,
+		Card: beanstream.CreditCard{
+			"John Doe",
+			"5100000010001004",
+			"11",
+			"19",
+			"123",
+			true}}
+}
+
 func TestIntegration_Payments_MakePayment(t *testing.T) {
 	gateway := createGateway()
 	request := beanstream.PaymentRequest{
-		paymentMethods.CARD,
-		beanstream.Util_randOrderId(6),
-		12.99,
-		beanstream.CreditCard{
+		PaymentMethod: paymentMethods.CARD,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        12.99,
+		Card: beanstream.CreditCard{
 			"John Doe",
 			"5100000010001004",
 			"11",
@@ -43,19 +57,60 @@ func TestIntegration_Payments_MakePayment(t *testing.T) {
 	assert.Equal(t, "P", res.Type)
 }
 
-func TestIntegration_Payments_PreAuthComplete(t *testing.T) {
+func TestIntegration_Payments_MakePaymentFullDetails(t *testing.T) {
 	gateway := createGateway()
 	request := beanstream.PaymentRequest{
-		paymentMethods.CARD,
-		beanstream.Util_randOrderId(6),
-		50.00,
-		beanstream.CreditCard{
+		PaymentMethod: paymentMethods.CARD,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        12.99,
+		Card: beanstream.CreditCard{
 			"John Doe",
 			"5100000010001004",
 			"11",
 			"19",
 			"123",
-			false}} // pre-auth (complete=false)
+			true},
+		BillingAddress: beanstream.Address{
+			"John Doe",
+			"123 Fake St.",
+			"suite 3",
+			"Victoria",
+			"BC",
+			"CA",
+			"V8T4M3",
+			"12505550123",
+			"test@example.com"},
+		ShippingAddress: beanstream.Address{
+			"John Doe",
+			"456 Jinglepot Rd.",
+			"",
+			"Nanaimo",
+			"BC",
+			"CA",
+			"V9T1R9",
+			"12505550123",
+			"test@example.com"},
+		Comment:    "a comment",
+		Language:   "ENG",
+		CustomerIp: "127.0.0.1",
+		Custom: beanstream.CustomFields{
+			"ref1 something",
+			"ref2 something",
+			"ref3 something",
+			"ref4 something",
+			"ref5 something"}}
+	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
+	assert.Nil(t, err, "Unexpected error occurred.", err)
+	assert.NotNil(t, res, "Result was nil")
+	assert.Equal(t, 1, res.Approved)
+	assert.Equal(t, "P", res.Type)
+}
+
+func TestIntegration_Payments_PreAuthComplete(t *testing.T) {
+	gateway := createGateway()
+	request := createCardRequest()
+	request.Card.Complete = false // pre-auth (complete=false)
+
 	res, err := gateway.Payments().MakePayment(request)
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
@@ -71,24 +126,14 @@ func TestIntegration_Payments_PreAuthComplete(t *testing.T) {
 
 func TestIntegration_Payments_Void(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
-		paymentMethods.CARD,
-		beanstream.Util_randOrderId(6),
-		22.00,
-		beanstream.CreditCard{
-			"John Doe",
-			"5100000010001004",
-			"11",
-			"19",
-			"123",
-			true}}
+	request := createCardRequest()
 	res, err := gateway.Payments().MakePayment(request)
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "P", res.Type)
 
-	res2, err2 := gateway.Payments().VoidPayment(res.ID, 22.00)
+	res2, err2 := gateway.Payments().VoidPayment(res.ID, 79.99)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)
@@ -97,24 +142,14 @@ func TestIntegration_Payments_Void(t *testing.T) {
 
 func TestIntegration_Payments_Return(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
-		paymentMethods.CARD,
-		beanstream.Util_randOrderId(6),
-		100.00,
-		beanstream.CreditCard{
-			"John Doe",
-			"5100000010001004",
-			"11",
-			"19",
-			"123",
-			true}}
+	request := createCardRequest()
 	res, err := gateway.Payments().MakePayment(request)
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "P", res.Type)
 
-	res2, err2 := gateway.Payments().ReturnPayment(res.ID, 100.00)
+	res2, err2 := gateway.Payments().ReturnPayment(res.ID, 55.00)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)
@@ -123,17 +158,7 @@ func TestIntegration_Payments_Return(t *testing.T) {
 
 func TestIntegration_Payments_ReturnError(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
-		paymentMethods.CARD,
-		beanstream.Util_randOrderId(6),
-		100.00,
-		beanstream.CreditCard{
-			"John Doe",
-			"5100000010001004",
-			"11",
-			"19",
-			"123",
-			true}}
+	request := createCardRequest()
 	res, err := gateway.Payments().MakePayment(request)
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
@@ -162,11 +187,11 @@ func TestIntegration_Payments_Token(t *testing.T) {
 
 	// step 2: make the purchase
 	gateway := createGateway()
-	request := beanstream.PaymentRequestToken{
-		paymentMethods.TOKEN,
-		beanstream.Util_randOrderId(6),
-		15.99,
-		beanstream.Token{
+	request := beanstream.PaymentRequest{
+		PaymentMethod: paymentMethods.TOKEN,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        15.99,
+		Token: beanstream.Token{
 			token,
 			"John Doe",
 			true}}
@@ -191,11 +216,11 @@ func TestIntegration_Payments_TokenPreAuth(t *testing.T) {
 
 	// step 2: make the purchase
 	gateway := createGateway()
-	request := beanstream.PaymentRequestToken{
-		paymentMethods.TOKEN,
-		beanstream.Util_randOrderId(6),
-		30.00,
-		beanstream.Token{
+	request := beanstream.PaymentRequest{
+		PaymentMethod: paymentMethods.TOKEN,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        50.00,
+		Token: beanstream.Token{
 			token,
 			"John Doe",
 			false}} // pre-auth (complete=false)
@@ -214,10 +239,10 @@ func TestIntegration_Payments_TokenPreAuth(t *testing.T) {
 
 func TestIntegration_Payments_Cash(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.CashPayment{
-		paymentMethods.CASH,
-		beanstream.Util_randOrderId(6),
-		10}
+	request := beanstream.PaymentRequest{
+		PaymentMethod: paymentMethods.CASH,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        12.00}
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
@@ -227,10 +252,10 @@ func TestIntegration_Payments_Cash(t *testing.T) {
 
 func TestIntegration_Payments_Cheque(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.ChequePayment{
-		paymentMethods.CHEQUE,
-		beanstream.Util_randOrderId(6),
-		14.35}
+	request := beanstream.PaymentRequest{
+		PaymentMethod: paymentMethods.CHEQUE,
+		OrderNumber:   beanstream.Util_randOrderId(6),
+		Amount:        15.01}
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
