@@ -1,0 +1,33 @@
+package beanstream
+
+import (
+	"beanstream/httpMethods"
+)
+
+const url = "https://www.beanstream.com/scripts/tokenization/tokens"
+
+type legatoCardRequest struct {
+	Number       string `json:"number"`
+	Expiry_month string `json:"expiry_month"`
+	Expiry_year  string `json:"expiry_year"`
+	Cvd          string `json:"cvd"`
+}
+
+type legatoTokenResponse struct {
+	Token   string `json:"token"`
+	Code    int    `json:"code"`
+	Version int    `json:"version"`
+	Message string `json:"message"`
+}
+
+// Turn a credit card into a single-use token
+func LegatoTokenizeCard(cardNumber string, expMo string, expYr string, cvd string) (string, error) {
+	req := legatoCardRequest{cardNumber, expMo, expYr, cvd}
+	responseType := legatoTokenResponse{}
+	res, err := ProcessBody(httpMethods.POST, url, "", "", req, &responseType)
+	if err != nil {
+		return "", err
+	}
+	token := res.(*legatoTokenResponse)
+	return token.Token, nil
+}

@@ -1,0 +1,35 @@
+1) Checkout the source code from TODO
+
+2) Install Testify for unit testing
+Run:
+	go get github.com/stretchr/testify
+
+Or if you use LiteIDE you can just add the Testify import (defined below in the 
+next step) and hit the G (Get) Button on the toolbar
+
+
+3) Write Unit test cases
+Import 'testing' and 'testify/assert' in your test file:
+	import (
+	  "testing"
+	  "github.com/stretchr/testify/assert"
+	)
+	
+If you are using LiteIDE you can add:
+	// +build unit	
+
+to the top of your unit test files. Make SURE to add a blank line after that!!
+Then add 
+-tags=unit
+to the TESTARGS settings parameter.
+
+	
+4) Write Integration tests
+If you are using LiteIDE then you will want to configure it to have a separate
+integration test button.
+	a) open [liteIde_install_dir]/share/liteide.litebuild/gosec.xml
+	b) add this custom tag:
+		<custom id="IntegrationTestArgs" name="INTEGRATIONTESTARGS" value="-v -tags=integration"/>
+	c) add this action tag:
+		<action id="TestIntegration" menu="Test" img="blue/test.png" key = "Ctrl+Shift+T" cmd="$(GO)" args="test $(INTEGRATIONTESTARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" takeall="true" navigate="true"/>
+	d) save the file, close and re-open LiteIDE. You should see a TestIntegration button under T
