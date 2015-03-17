@@ -17,12 +17,12 @@ func TestIntegration_Payments_MakePayment(t *testing.T) {
 		OrderNumber:   beanstream.Util_randOrderId(6),
 		Amount:        12.99,
 		Card: beanstream.CreditCard{
-			"John Doe",
-			"5100000010001004",
-			"11",
-			"19",
-			"123",
-			true}}
+			Name:        "John Doe",
+			Number:      "5100000010001004",
+			ExpiryMonth: "11",
+			ExpiryYear:  "19",
+			Cvd:         "123",
+			Complete:    true}}
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
@@ -37,12 +37,12 @@ func TestIntegration_Payments_MakePaymentFullDetails(t *testing.T) {
 		OrderNumber:   beanstream.Util_randOrderId(6),
 		Amount:        12.99,
 		Card: beanstream.CreditCard{
-			"John Doe",
-			"5100000010001004",
-			"11",
-			"19",
-			"123",
-			true},
+			Name:        "John Doe",
+			Number:      "5100000010001004",
+			ExpiryMonth: "11",
+			ExpiryYear:  "19",
+			Cvd:         "123",
+			Complete:    true},
 		BillingAddress: beanstream.Address{
 			"John Doe",
 			"123 Fake St.",
@@ -147,6 +147,7 @@ func TestIntegration_Payments_ReturnError(t *testing.T) {
 	assert.Equal(t, 194, bicError.Code)
 	assert.Equal(t, 2, bicError.Category)
 }
+
 func TestIntegration_Payments_Token(t *testing.T) {
 	// step 1: get the token
 	token, err := beanstream.LegatoTokenizeCard(

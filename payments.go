@@ -96,6 +96,9 @@ type CreditCard struct {
 	ExpiryYear  string `json:"expiry_year"`
 	Cvd         string `json:"cvd"`
 	Complete    bool   `json:"complete"`
+	Function    string `json:"function,omitempty"`
+	Type        string `json:"card_type,omitempty"`
+	Id          int    `json:"card_id,string,omitempty"`
 }
 
 type Token struct {

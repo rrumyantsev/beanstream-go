@@ -26,10 +26,10 @@ func createCardRequest() beanstream.PaymentRequest {
 		OrderNumber:   beanstream.Util_randOrderId(6),
 		Amount:        79.99,
 		Card: beanstream.CreditCard{
-			"John Doe",
-			"5100000010001004",
-			"11",
-			"19",
-			"123",
-			true}}
+			Name:        "John Doe",
+			Number:      "5100000010001004",
+			ExpiryMonth: "11",
+			ExpiryYear:  "19",
+			Cvd:         "123",
+			Complete:    true}}
 }
