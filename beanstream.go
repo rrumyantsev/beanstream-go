@@ -1,26 +1,22 @@
 // beanstream project beanstream.go
 package beanstream
 
-import (
-//"time"
-)
+import ()
 
 type Gateway struct {
 	Config Config
 }
 
-//PaymentsAPI returns a new beanstream.PaymentsAPI type struct the Config.
+//PaymentsAPI returns a new beanstream.PaymentsAPI type struct with the config set.
 func (v *Gateway) Payments() PaymentsAPI {
 	api := PaymentsAPI{v.Config}
 
 	return api
 }
 
-/*type bicTime struct {
-	time.Time
-	f string
+//ProfilesAPI returns a new beanstream.ProfilesAPI type struct with the config set.
+func (v *Gateway) Profiles() ProfilesAPI {
+	api := ProfilesAPI{v.Config}
+
+	return api
 }
-
-func (t *bicTime) UnmarshalJSON(b []byte) (err error) {
-
-}*/

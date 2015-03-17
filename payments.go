@@ -74,18 +74,19 @@ func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentRe
 }
 
 type PaymentRequest struct {
-	PaymentMethod   string       `json:"payment_method"`
-	OrderNumber     string       `json:"order_number,omitempty"`
-	Amount          float32      `json:"amount"`
-	Card            CreditCard   `json:"card,omitempty"`
-	Token           Token        `json:"token,omitempty"`
-	BillingAddress  Address      `json:"billing,omitempty"`
-	ShippingAddress Address      `json:"shipping,omitempty"`
-	Comment         string       `json:"comments,omitempty"`
-	Language        string       `json:"language,omitempty"`
-	CustomerIp      string       `json:"customer_ip,omitempty"`
-	TermUrl         string       `json:"term_url,omitempty"`
-	Custom          CustomFields `json:"custom,omitempty"`
+	PaymentMethod   string         `json:"payment_method"`
+	OrderNumber     string         `json:"order_number,omitempty"`
+	Amount          float32        `json:"amount"`
+	Card            CreditCard     `json:"card,omitempty"`
+	Token           Token          `json:"token,omitempty"`
+	Profile         ProfilePayment `json:"payment_profile,omitempty"`
+	BillingAddress  Address        `json:"billing,omitempty"`
+	ShippingAddress Address        `json:"shipping,omitempty"`
+	Comment         string         `json:"comments,omitempty"`
+	Language        string         `json:"language,omitempty"`
+	CustomerIp      string         `json:"customer_ip,omitempty"`
+	TermUrl         string         `json:"term_url,omitempty"`
+	Custom          CustomFields   `json:"custom,omitempty"`
 }
 
 type CreditCard struct {
@@ -101,6 +102,12 @@ type Token struct {
 	Token    string `json:"code"`
 	Name     string `json:"name"`
 	Complete bool   `json:"complete"`
+}
+
+type ProfilePayment struct {
+	ProfileId string `json:"customer_code"`
+	CardId    int    `json:"card_id"`
+	Complete  bool   `json:"complete"`
 }
 
 type completionRequest struct {

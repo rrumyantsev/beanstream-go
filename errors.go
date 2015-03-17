@@ -22,6 +22,10 @@ func (e *BeanstreamApiException) Error() string {
 	return fmt.Sprintf("%v %v: code(%v) category(%v) message: %v   ref: %v  details: %v", e.Status, e.ErrorType(), e.Code, e.Category, e.Message, e.Reference, e.Details)
 }
 
+func (e BeanstreamApiException) String() string {
+	return e.Error()
+}
+
 func (e *BeanstreamApiException) ErrorType() string {
 	switch e.Status {
 	case -1:

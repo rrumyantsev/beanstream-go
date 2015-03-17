@@ -33,21 +33,7 @@ func ProcessBody(httpMethod string, url string, merchId string, apiKey string, d
 
 	// handle errors
 	if resp.StatusCode != 200 {
-		// parse json body
-		ct := resp.Header.Get("Content-Type")
-		fmt.Println("Error content-type: ", ct)
-		if ct == "application/json; charset=utf-8" {
-			errResp := errorResponse{}
-			b := strings.Replace(string(body), "\"reference\":null,", "\"reference\":\"\",", -1)
-			fmt.Println("Error message: ", b)
-			err = json.Unmarshal([]byte(b), &errResp)
-			if err != nil {
-				return nil, &BeanstreamApiException{resp.StatusCode, 0, 0, err.Error(), "Error parsing Json error message", nil}
-			}
-			return nil, &BeanstreamApiException{resp.StatusCode, errResp.Code, errResp.Category, errResp.Message, errResp.Reference, errResp.Details}
-		} else {
-			return nil, &BeanstreamApiException{resp.StatusCode, 0, 0, err.Error(), "Non-json error message. Content Type(" + ct + ")", nil}
-		}
+		return nil, handleError(resp, body)
 	}
 
 	err = json.Unmarshal([]byte(body), &responseType)
@@ -59,8 +45,28 @@ func ProcessBody(httpMethod string, url string, merchId string, apiKey string, d
 	return responseType, nil
 }
 
-func Process(httpMethod string, url string, merchId string, apiKey string) interface{} {
+func handleError(resp *http.Response, body []byte) error {
+	// parse json body
+	ct := resp.Header.Get("Content-Type")
+	fmt.Println("Error content-type: ", ct)
+	if ct == "application/json; charset=utf-8" {
+		errResp := errorResponse{}
+		b := strings.Replace(string(body), "\"reference\":null,", "\"reference\":\"\",", -1)
+		fmt.Println("Error message: ", b)
+		err := json.Unmarshal([]byte(b), &errResp)
+		if err != nil {
+			return &BeanstreamApiException{resp.StatusCode, 0, 0, err.Error(), "Error parsing Json error message", nil}
+		}
+		return &BeanstreamApiException{resp.StatusCode, errResp.Code, errResp.Category, errResp.Message, errResp.Reference, errResp.Details}
+	} else {
+		return &BeanstreamApiException{resp.StatusCode, 0, 0, "", "Non-json error message. Content Type(" + ct + ")", nil}
+	}
+}
 
+func Process(httpMethod string, url string, merchId string, apiKey string, responseType interface{}) (interface{}, error) {
+
+	fmt.Println("--> Request ")
+	fmt.Println("Url: ", url)
 	passcode := GenerateAuthCode(merchId, apiKey)
 	req, err := http.NewRequest(httpMethod, url, nil)
 	req.Header.Set("Authorization", "Passcode "+passcode)
@@ -73,12 +79,22 @@ func Process(httpMethod string, url string, merchId string, apiKey string) inter
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	fmt.Println("<-- Response:", string(body))
+	fmt.Println("response Status:", resp.Status)
 
-	return nil
+	// handle errors
+	if resp.StatusCode != 200 {
+		return nil, handleError(resp, body)
+	}
+
+	err = json.Unmarshal([]byte(body), &responseType)
+	if err != nil {
+		return nil, &BeanstreamApiException{resp.StatusCode, 0, 0, err.Error(), "Error parsing Json response", nil}
+	}
+
+	//fmt.Printf("responseType: %T : %v\n", responseType, responseType)
+	return responseType, nil
 }
 
 func GenerateAuthCode(merchId string, apiKey string) string {
