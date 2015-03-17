@@ -236,3 +236,17 @@ func TestIntegration_Payments_Cheque(t *testing.T) {
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "P", res.Type)
 }
+
+func TestIntegration_Payments_GetTransaction(t *testing.T) {
+	gateway := createGateway()
+	request := createCardRequest()
+	res, err := gateway.Payments().MakePayment(request)
+	transId := res.ID
+
+	gateway.Payments().ReturnPayment(transId, 1.00) // a small return so we can see it in the transaction
+
+	trans, err := gateway.Payments().GetTransaction(transId)
+	assert.Nil(t, err)
+	assert.NotNil(t, trans)
+
+}

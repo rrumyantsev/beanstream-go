@@ -73,6 +73,20 @@ func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentRe
 	return pr, nil
 }
 
+func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
+	url := api.Config.BaseUrl() + getPaymentUrl
+	url = fmt.Sprintf(url, transId)
+
+	responseType := Transaction{}
+	res, err := Process(httpMethods.GET, url, api.Config.MerchantId, api.Config.PaymentsApiKey, &responseType)
+	if err != nil {
+		return nil, err
+	}
+	pr := res.(*Transaction)
+	pr.CreatedTime = api.AsDate(pr.created)
+	return pr, nil
+}
+
 type PaymentRequest struct {
 	PaymentMethod   string         `json:"payment_method"`
 	OrderNumber     string         `json:"order_number,omitempty"`
@@ -99,6 +113,8 @@ type CreditCard struct {
 	Function    string `json:"function,omitempty"`
 	Type        string `json:"card_type,omitempty"`
 	Id          int    `json:"card_id,string,omitempty"`
+	AvsResult   string `json:"avs_result,omitempty"`
+	CvdResult   string `json:"cvd_result,omitempty"`
 }
 
 type Token struct {
@@ -143,6 +159,52 @@ type CustomFields struct {
 	Ref3 string `json:"ref3,omitempty"`
 	Ref4 string `json:"ref4,omitempty"`
 	Ref5 string `json:"ref5,omitempty"`
+}
+
+type Transaction struct {
+	Id               int    `json:"id,omitempty"`
+	Approved         int    `json:"approved,omitempty"`
+	MessageId        int    `json:"message_id,omitempty"`
+	Message          string `json:"message,omitempty"`
+	AuthCode         string `json:"auth_code,omitempty"`
+	created          string `json:"created,omitempty"`
+	CreatedTime      time.Time
+	OrderNumber      string       `json:"order_number,omitempty"`
+	Amount           float32      `json:"amount,omitempty"`
+	Type             string       `json:"type,omitempty"`
+	Comment          string       `json:"comments,omitempty"`
+	BatchNumber      string       `json:"batch_number,omitempty"`
+	TotalRefunds     float32      `json:"total_refunds,omitempty"`
+	TotalCompletions float32      `json:"total_completions,omitempty"`
+	PaymentMethod    string       `json:"payment_method,omitempty"`
+	Card             CreditCard   `json:"card,omitempty"`
+	BillingAddress   Address      `json:"billing,omitempty"`
+	ShippingAddress  Address      `json:"shipping,omitempty"`
+	Custom           CustomFields `json:"custom,omitempty"`
+	Adjustments      []Adjustment `json:"adjustments,omitempty"`
+	Links            []Link       `json:"links,omitempty"`
+}
+
+func (t *Transaction) IsApproved() bool {
+	if t.Amount == 1 {
+		return true
+	}
+	return false
+}
+
+type Adjustment struct {
+	Id       string  `json:"id,omitempty"`
+	Type     string  `json:"type,omitempty"`
+	Approval string  `json:"approval,omitempty"`
+	Message  string  `json:"message,omitempty"`
+	Amount   float32 `json:"amount,omitempty"`
+	Url      string  `json:"url,omitempty"`
+}
+
+type Link struct {
+	Rel    string `json:"rel,omitempty"`
+	Href   string `json:"href,omitempty"`
+	Method string `json:"method,omitempty"`
 }
 
 // JSON:
