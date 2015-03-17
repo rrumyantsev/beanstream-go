@@ -84,6 +84,11 @@ func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
 	}
 	pr := res.(*Transaction)
 	pr.CreatedTime = api.AsDate(pr.created)
+	if pr.Adjustments != nil {
+		for _, adj := range pr.Adjustments {
+			adj.CreatedTime = api.AsDate(adj.created)
+		}
+	}
 	return pr, nil
 }
 
@@ -181,7 +186,7 @@ type Transaction struct {
 	BillingAddress   Address      `json:"billing,omitempty"`
 	ShippingAddress  Address      `json:"shipping,omitempty"`
 	Custom           CustomFields `json:"custom,omitempty"`
-	Adjustments      []Adjustment `json:"adjustments,omitempty"`
+	Adjustments      []Adjustment `json:"adjusted_by,omitempty"`
 	Links            []Link       `json:"links,omitempty"`
 }
 
@@ -193,12 +198,14 @@ func (t *Transaction) IsApproved() bool {
 }
 
 type Adjustment struct {
-	Id       string  `json:"id,omitempty"`
-	Type     string  `json:"type,omitempty"`
-	Approval string  `json:"approval,omitempty"`
-	Message  string  `json:"message,omitempty"`
-	Amount   float32 `json:"amount,omitempty"`
-	Url      string  `json:"url,omitempty"`
+	Id          int     `json:"id,omitempty"`
+	Type        string  `json:"type,omitempty"`
+	Approval    int     `json:"approval,omitempty"`
+	Message     string  `json:"message,omitempty"`
+	Amount      float32 `json:"amount,omitempty"`
+	created     string  `json:"created,omitempty"`
+	CreatedTime time.Time
+	Url         string `json:"url,omitempty"`
 }
 
 type Link struct {

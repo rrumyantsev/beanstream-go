@@ -243,10 +243,24 @@ func TestIntegration_Payments_GetTransaction(t *testing.T) {
 	res, err := gateway.Payments().MakePayment(request)
 	transId := res.ID
 
-	gateway.Payments().ReturnPayment(transId, 1.00) // a small return so we can see it in the transaction
-
 	trans, err := gateway.Payments().GetTransaction(transId)
 	assert.Nil(t, err)
 	assert.NotNil(t, trans)
 
+}
+
+func TestIntegration_Payments_GetTransactionWithAdjustments(t *testing.T) {
+	gateway := createGateway()
+	request := createCardRequest()
+	res, err := gateway.Payments().MakePayment(request)
+	transId := res.ID
+
+	gateway.Payments().ReturnPayment(transId, 1.00) // a small return so we can see it in the transaction
+	gateway.Payments().VoidPayment(transId, 5.00)
+
+	trans, err := gateway.Payments().GetTransaction(transId)
+	assert.Nil(t, err)
+	assert.NotNil(t, trans)
+	assert.NotNil(t, trans.Adjustments)
+	assert.Equal(t, 2, len(trans.Adjustments))
 }
