@@ -4,7 +4,7 @@ package beanstream
 import ()
 
 /*
-The Gateway is the entry point for making payments. It stores the configuration
+Gateway is the entry point for making payments. It stores the configuration
 for your merchant account, such as merchant ID and passcode, in a Config struct.
 
 The Gateway will give you access to the 3 APIs: Payments, Profiles, and Reporting.
@@ -17,21 +17,21 @@ type Gateway struct {
 	Config Config
 }
 
-//PaymentsAPI returns a new beanstream.PaymentsAPI type struct with the config set.
+//Payments returns a new beanstream.PaymentsAPI type struct with the config set.
 func (v *Gateway) Payments() PaymentsAPI {
 	api := PaymentsAPI{v.Config}
 
 	return api
 }
 
-//ProfilesAPI returns a new beanstream.ProfilesAPI type struct with the config set.
+//Profiles returns a new beanstream.ProfilesAPI type struct with the config set.
 func (v *Gateway) Profiles() ProfilesAPI {
 	api := ProfilesAPI{v.Config}
 
 	return api
 }
 
-//ReportsAPI returns a new beanstream.ReportsAPI type struct with the config set.
+//Reports returns a new beanstream.ReportsAPI type struct with the config set.
 func (v *Gateway) Reports() ReportsAPI {
 	api := ReportsAPI{v.Config}
 
