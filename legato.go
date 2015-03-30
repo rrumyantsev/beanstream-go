@@ -21,6 +21,10 @@ type legatoTokenResponse struct {
 }
 
 // Turn a credit card into a single-use token
+// This should not be used from a production environment. The point
+// of using a token is to not have the credit card info go to your server,
+// thus increasing the scope of your PCI compliance. The token should be
+// collected on the client-side app.
 func LegatoTokenizeCard(cardNumber string, expMo string, expYr string, cvd string) (string, error) {
 	req := legatoCardRequest{cardNumber, expMo, expYr, cvd}
 	responseType := legatoTokenResponse{}

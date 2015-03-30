@@ -24,3 +24,9 @@ func Util_randOrderId(num int) string {
 	rnd += strconv.Itoa(int(time.Now().Unix()))
 	return rnd
 }
+
+func AsDate(val string, config Config) time.Time {
+	rfc3339Time := val + "Z" + config.TimezoneOffset
+	t, _ := time.Parse(time.RFC3339, rfc3339Time)
+	return t
+}

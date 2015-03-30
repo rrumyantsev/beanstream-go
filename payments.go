@@ -14,10 +14,20 @@ const returnUrl = paymentUrl + "/%v/returns"
 const voidUrl = paymentUrl + "/%v/void"
 const getPaymentUrl = paymentUrl + "/%v"
 
+/*
+Through the payments API you can create payments, get payments,
+return payments, void payments, as well as pre-authorize and complete
+payments.
+*/
 type PaymentsAPI struct {
 	Config Config
 }
 
+/*
+Create a payment. Either a Credit Card, Profile, Cash, or Cheque payment request. Cash and Cheque payments
+are just for your own record keeping.
+You must supply it a PaymentRequest that is defined in this package
+*/
 func (api PaymentsAPI) MakePayment(transaction interface{}) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + paymentUrl
 	responseType := PaymentResponse{}
@@ -25,12 +35,13 @@ func (api PaymentsAPI) MakePayment(transaction interface{}) (*PaymentResponse, e
 	if err != nil {
 		return nil, err
 	}
-	//fmt.Printf("MakePayment result: %T %v\n", res, res)
+	fmt.Printf("MakePayment result: %T %v\n", res, res)
 	pr := res.(*PaymentResponse)
-	pr.CreatedTime = api.AsDate(pr.created)
+	pr.CreatedTime = AsDate(pr.created, api.Config)
 	return pr, nil
 }
 
+// Complete a pre-authorized payment for some or all of the pre-authorized amount.
 func (api PaymentsAPI) CompletePayment(transId string, amount float32) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + completionUrl
 	url = fmt.Sprintf(url, transId)
@@ -41,10 +52,12 @@ func (api PaymentsAPI) CompletePayment(transId string, amount float32) (*Payment
 		return nil, err
 	}
 	pr := res.(*PaymentResponse)
-	pr.CreatedTime = api.AsDate(pr.created)
+	pr.CreatedTime = AsDate(pr.created, api.Config)
 	return pr, nil
 }
 
+// Void a payment for some or all of the original amount.
+// In order to void a payment you must not wait too long.
 func (api PaymentsAPI) VoidPayment(transId string, amount float32) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + voidUrl
 	url = fmt.Sprintf(url, transId)
@@ -55,10 +68,11 @@ func (api PaymentsAPI) VoidPayment(transId string, amount float32) (*PaymentResp
 		return nil, err
 	}
 	pr := res.(*PaymentResponse)
-	pr.CreatedTime = api.AsDate(pr.created)
+	pr.CreatedTime = AsDate(pr.created, api.Config)
 	return pr, nil
 }
 
+// Return a payment for all or some of the original amount.
 func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + returnUrl
 	url = fmt.Sprintf(url, transId)
@@ -69,10 +83,11 @@ func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentRe
 		return nil, err
 	}
 	pr := res.(*PaymentResponse)
-	pr.CreatedTime = api.AsDate(pr.created)
+	pr.CreatedTime = AsDate(pr.created, api.Config)
 	return pr, nil
 }
 
+// Retrieve a transaction and all adjustments that were performed on it.
 func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
 	url := api.Config.BaseUrl() + getPaymentUrl
 	url = fmt.Sprintf(url, transId)
@@ -83,15 +98,20 @@ func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
 		return nil, err
 	}
 	pr := res.(*Transaction)
-	pr.CreatedTime = api.AsDate(pr.created)
+	pr.CreatedTime = AsDate(pr.created, api.Config)
 	if pr.Adjustments != nil {
 		for _, adj := range pr.Adjustments {
-			adj.CreatedTime = api.AsDate(adj.created)
+			adj.CreatedTime = AsDate(adj.created, api.Config)
 		}
 	}
 	return pr, nil
 }
 
+// The main struct for making a payment. The mandatory fields are:
+//	PaymentMethod
+//	Ordernumber
+//	Amount
+// For specific types of payments you will need: Card, Token, or Profile
 type PaymentRequest struct {
 	PaymentMethod   string         `json:"payment_method"`
 	OrderNumber     string         `json:"order_number,omitempty"`
@@ -108,6 +128,8 @@ type PaymentRequest struct {
 	Custom          CustomFields   `json:"custom,omitempty"`
 }
 
+// The credit card info for making a payment.
+// You can pre-authorize a purchase by setting Complete to false.
 type CreditCard struct {
 	Name        string `json:"name"`
 	Number      string `json:"number"`
@@ -122,12 +144,18 @@ type CreditCard struct {
 	CvdResult   string `json:"cvd_result,omitempty"`
 }
 
+// The single-use Legato token for making a payment.
+// You can pre-authorize a purchase by setting Complete to false.
 type Token struct {
 	Token    string `json:"code"`
 	Name     string `json:"name"`
 	Complete bool   `json:"complete"`
 }
 
+// Make a payment with a Payment Profile. You need the Profile ID
+// as well as the Card id. If there is just one card on a profile
+// use card ID = 1
+// You can pre-authorize a purchase by setting Complete to false.
 type ProfilePayment struct {
 	ProfileId string `json:"customer_code"`
 	CardId    int    `json:"card_id"`
@@ -146,6 +174,7 @@ type returnRequest struct {
 	Amount float32 `json:"amount"`
 }
 
+// Either a billing or shipping address
 type Address struct {
 	Name         string `json:"name,omitempty"`
 	AddressLine1 string `json:"address_line1,omitempty"`
@@ -158,6 +187,7 @@ type Address struct {
 	EmailAddress string `json:"email_address,omitempty"`
 }
 
+// Fields that can be added to a transaction on creation.
 type CustomFields struct {
 	Ref1 string `json:"ref1,omitempty"`
 	Ref2 string `json:"ref2,omitempty"`
@@ -166,6 +196,10 @@ type CustomFields struct {
 	Ref5 string `json:"ref5,omitempty"`
 }
 
+/*
+The struct you receive when you call GetTransaction().
+To check if a transaction is approved you can call the method IsApproved()
+*/
 type Transaction struct {
 	Id               int    `json:"id,omitempty"`
 	Approved         int    `json:"approved,omitempty"`
@@ -190,13 +224,17 @@ type Transaction struct {
 	Links            []Link       `json:"links,omitempty"`
 }
 
+// Test if a Payment was approved
 func (t *Transaction) IsApproved() bool {
-	if t.Amount == 1 {
+	if t.Approved == 1 {
 		return true
 	}
 	return false
 }
 
+/*
+An adjustment to the payment, often a return or void.
+*/
 type Adjustment struct {
 	Id          int     `json:"id,omitempty"`
 	Type        string  `json:"type,omitempty"`
@@ -208,34 +246,18 @@ type Adjustment struct {
 	Url         string `json:"url,omitempty"`
 }
 
+/*
+Links for http access for returns and voids. Not useful with
+the SDK be here none the less.
+*/
 type Link struct {
 	Rel    string `json:"rel,omitempty"`
 	Href   string `json:"href,omitempty"`
 	Method string `json:"method,omitempty"`
 }
 
-// JSON:
-//{
-// 	"id":"10108462",
-//	"approved":"1",
-//	"message_id":"1",
-//	"message":"Approved",
-//	"auth_code":"TEST",
-//	"created":"2015-03-13T08:59:24",
-//	"order_number":"YFEJXU1426262363",
-//	"type":"PA",
-//	"payment_method":"CC",
-//	"card":{
-//		"card_type":"MC",
-//		"last_four":"1004",
-//		"cvd_match":0,
-//		"address_match":0,
-//		"postal_result":0},
-//	"links":[
-//		{"rel":"complete","href":"https://www.beanstream.com/api/v1/payments/10108462/completions","method":"POST"}
-//	]
-//}
-//
+// The response from a successful transaction. Some fields might be empty.
+// To check if a transaction is approved you can call the method IsApproved().
 type PaymentResponse struct {
 	Approved int    `json:"approved,string"`
 	AuthCode string `json:"auth_code"`
@@ -261,8 +283,32 @@ type PaymentResponse struct {
 	Type          string `json:"type"`
 }
 
-func (api PaymentsAPI) AsDate(val string) time.Time {
-	rfc3339Time := val + "Z" + api.Config.TimezoneOffset
-	t, _ := time.Parse(time.RFC3339, rfc3339Time)
-	return t
+// Example json for PaymentResponse
+//{
+// 	"id":"10108462",
+//	"approved":"1",
+//	"message_id":"1",
+//	"message":"Approved",
+//	"auth_code":"TEST",
+//	"created":"2015-03-13T08:59:24",
+//	"order_number":"YFEJXU1426262363",
+//	"type":"PA",
+//	"payment_method":"CC",
+//	"card":{
+//		"card_type":"MC",
+//		"last_four":"1004",
+//		"cvd_match":0,
+//		"address_match":0,
+//		"postal_result":0},
+//	"links":[
+//		{"rel":"complete","href":"https://www.beanstream.com/api/v1/payments/10108462/completions","method":"POST"}
+//	]
+//}
+
+// Test if a Payment was approved
+func (t *PaymentResponse) IsApproved() bool {
+	if t.Approved == 1 {
+		return true
+	}
+	return false
 }

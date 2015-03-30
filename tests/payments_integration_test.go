@@ -26,7 +26,7 @@ func TestIntegration_Payments_MakePayment(t *testing.T) {
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
-	assert.Equal(t, 1, res.Approved)
+	assert.Equal(t, 1, res.IsApproved())
 	assert.Equal(t, "P", res.Type)
 }
 
