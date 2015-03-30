@@ -13,7 +13,7 @@ const cardsBaseUrl = profileUrl + "/cards"
 const cardUrl = cardsBaseUrl + "/%v"
 
 /*
-The Profiles API lets you store customer information so it can be
+ProfilesAPI lets you store customer information so it can be
 re-used. When you create a payment profile you receive a customer code,
 also known as a multi-use token. You can then use this token to make
 payments. Profiles have standard CRUD operations available to them
@@ -23,7 +23,7 @@ type ProfilesAPI struct {
 	Config Config
 }
 
-// Create a profile.
+// CreateProfile Creates a new profile.
 func (api ProfilesAPI) CreateProfile(profile Profile) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + profilesBaseUrl
 	responseType := ProfileResponse{}
@@ -36,7 +36,7 @@ func (api ProfilesAPI) CreateProfile(profile Profile) (*ProfileResponse, error) 
 	return pr, nil
 }
 
-// Retrieve a profile using the profile ID. This ID is returned when you create
+// GetProfile Retrieves a profile using the profile ID. This ID is returned when you create
 // a profile.
 func (api ProfilesAPI) GetProfile(profileId string) (*Profile, error) {
 	url := api.Config.BaseUrl() + profileUrl
@@ -54,7 +54,7 @@ func (api ProfilesAPI) GetProfile(profileId string) (*Profile, error) {
 	return pr, nil
 }
 
-// Update a profile
+// UpdateProfile Updates a profile
 func (api ProfilesAPI) UpdateProfile(profile *Profile) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + profileUrl
 	url = fmt.Sprintf(url, profile.Id)
@@ -71,7 +71,7 @@ func (api ProfilesAPI) UpdateProfile(profile *Profile) (*ProfileResponse, error)
 	return pr, nil
 }
 
-// Delete a profile
+// DeleteProfile Deletes a profile
 func (api ProfilesAPI) DeleteProfile(profileId string) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + profileUrl
 	url = fmt.Sprintf(url, profileId)
@@ -86,7 +86,7 @@ func (api ProfilesAPI) DeleteProfile(profileId string) (*ProfileResponse, error)
 	return pr, nil
 }
 
-// Get all cards on a profile
+// GetCards gets all cards on a profile
 func (api ProfilesAPI) GetCards(profileId string) ([]CreditCard, error) {
 	url := api.Config.BaseUrl() + cardsBaseUrl
 	url = fmt.Sprintf(url, profileId)
@@ -101,7 +101,7 @@ func (api ProfilesAPI) GetCards(profileId string) ([]CreditCard, error) {
 	return pr.Cards, nil
 }
 
-// Get a single card from a profile. Cards are indexed starting with id 1 (not zero)
+// GetCard Gets a single card from a profile. Cards are indexed starting with id 1 (not zero)
 func (api ProfilesAPI) GetCard(profileId string, cardId int) (*CreditCard, error) {
 	url := api.Config.BaseUrl() + cardsBaseUrl
 	url = fmt.Sprintf(url, profileId)
@@ -120,7 +120,7 @@ func (api ProfilesAPI) GetCard(profileId string, cardId int) (*CreditCard, error
 	return &pr.Cards[cardId-1], nil
 }
 
-// Add a card to a profile
+// AddCard Add a card to a profile
 func (api ProfilesAPI) AddCard(profileId string, card CreditCard) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + cardsBaseUrl
 	url = fmt.Sprintf(url, profileId)
@@ -137,7 +137,7 @@ func (api ProfilesAPI) AddCard(profileId string, card CreditCard) (*ProfileRespo
 	return pr, nil
 }
 
-// Delete a card from a profile
+// UpdateCard Deletes a card from a profile
 func (api ProfilesAPI) DeleteCard(profileId string, cardId int) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + cardUrl
 	url = fmt.Sprintf(url, profileId, cardId)
@@ -152,7 +152,7 @@ func (api ProfilesAPI) DeleteCard(profileId string, cardId int) (*ProfileRespons
 	return pr, nil
 }
 
-// Update a card stored on a profile. This will NOT update the card number. To update
+// UpdateCard Updates a card stored on a profile. This will NOT update the card number. To update
 // a card number you must remove the old card and add the new one.
 func (api ProfilesAPI) UpdateCard(profileId string, card CreditCard) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + cardUrl
@@ -174,7 +174,7 @@ func (api ProfilesAPI) UpdateCard(profileId string, card CreditCard) (*ProfileRe
 }
 
 /*
-Profiles store the information needed to make purchases and provide a means
+Profile stores the information needed to make purchases and provide a means
 for saving this information when a customer returns to your store.
 
 A profile can be created with a Credit Card or a single-use Legato token (thus
@@ -198,28 +198,28 @@ type Profile struct {
 	ModifiedDate    time.Time
 }
 
-// Retrieve all cards from a profile
+// GetCards Retrieves all cards from a profile
 func (p *Profile) GetCards(pAPI ProfilesAPI) ([]CreditCard, error) {
 	return pAPI.GetCards(p.Id)
 }
 
-// Get a single card from a profile. Cards are indexed starting with id 1 (not zero)
+// GetCard Get a single card from a profile. Cards are indexed starting with id 1 (not zero)
 func (p *Profile) GetCard(pAPI ProfilesAPI, cardId int) (*CreditCard, error) {
 	return pAPI.GetCard(p.Id, cardId)
 }
 
-// Add a card to a profile
+// AddCard Add a card to a profile
 func (p *Profile) AddCard(pAPI ProfilesAPI, card CreditCard) (*ProfileResponse, error) {
 	return pAPI.AddCard(p.Id, card)
 }
 
-// Update a card stored on a profile. This will NOT update the card number. To update
+// UpdateCard Updates a card stored on a profile. This will NOT update the card number. To update
 // a card number you must remove the old card and add the new one.
 func (p *Profile) UpdateCard(pAPI ProfilesAPI, card CreditCard) (*ProfileResponse, error) {
 	return pAPI.UpdateCard(p.Id, card)
 }
 
-// Delete a card from a profile
+// DeleteCard Deletes a card from a profile
 func (p *Profile) DeleteCard(pAPI ProfilesAPI, cardId int) (*ProfileResponse, error) {
 	return pAPI.DeleteCard(p.Id, cardId)
 }
@@ -229,7 +229,7 @@ type cardWrapper struct {
 	Card CreditCard `json:"card"`
 }
 
-// The response from profile CRUD operations.
+// ProfileResponse is the response from profile CRUD operations.
 type ProfileResponse struct {
 	Id      string `json:"customer_code,omitempty"`
 	Code    int    `json:"code,omitempty"`
