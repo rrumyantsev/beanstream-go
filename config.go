@@ -3,6 +3,8 @@ package beanstream
 const bicUrlProtocol = "https://"
 const bicUrl = "beanstream.com"
 
+// Configuration for the Beanstream Gateway. To get some default values
+// call DefaultConfig()
 type Config struct {
 	MerchantId      string
 	PaymentsApiKey  string

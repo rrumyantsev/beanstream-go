@@ -56,7 +56,7 @@ func (api PaymentsAPI) CompletePayment(transId string, amount float32) (*Payment
 	return pr, nil
 }
 
-// Void a payment for some or all of the original amount.
+// VoidPayment cancels a payment for some or all of the original amount.
 // In order to void a payment you must not wait too long.
 func (api PaymentsAPI) VoidPayment(transId string, amount float32) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + voidUrl
@@ -72,7 +72,7 @@ func (api PaymentsAPI) VoidPayment(transId string, amount float32) (*PaymentResp
 	return pr, nil
 }
 
-// Return a payment for all or some of the original amount.
+// ReturnPayment returns the money to the customer for all or some of the original amount.
 func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + returnUrl
 	url = fmt.Sprintf(url, transId)
@@ -87,7 +87,7 @@ func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentRe
 	return pr, nil
 }
 
-// Retrieve a transaction and all adjustments that were performed on it.
+// GetTransaction retrieves a transaction and all adjustments that were performed on it.
 func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
 	url := api.Config.BaseUrl() + getPaymentUrl
 	url = fmt.Sprintf(url, transId)
@@ -107,7 +107,7 @@ func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
 	return pr, nil
 }
 
-// The main struct for making a payment. The mandatory fields are:
+// PaymentRequest is the main struct for making a payment. The mandatory fields are:
 //	PaymentMethod
 //	Ordernumber
 //	Amount
@@ -128,7 +128,7 @@ type PaymentRequest struct {
 	Custom          CustomFields   `json:"custom,omitempty"`
 }
 
-// The credit card info for making a payment.
+// CreditCard info for making a payment.
 // You can pre-authorize a purchase by setting Complete to false.
 type CreditCard struct {
 	Name        string `json:"name"`
@@ -144,7 +144,7 @@ type CreditCard struct {
 	CvdResult   string `json:"cvd_result,omitempty"`
 }
 
-// The single-use Legato token for making a payment.
+// Token is a single-use Legato token for making a payment.
 // You can pre-authorize a purchase by setting Complete to false.
 type Token struct {
 	Token    string `json:"code"`
@@ -152,7 +152,7 @@ type Token struct {
 	Complete bool   `json:"complete"`
 }
 
-// Make a payment with a Payment Profile. You need the Profile ID
+// ProfilePayment allows you to make a payment with a Payment Profile. You need the Profile ID
 // as well as the Card id. If there is just one card on a profile
 // use card ID = 1
 // You can pre-authorize a purchase by setting Complete to false.
@@ -174,7 +174,7 @@ type returnRequest struct {
 	Amount float32 `json:"amount"`
 }
 
-// Either a billing or shipping address
+// Address is either a billing or shipping address
 type Address struct {
 	Name         string `json:"name,omitempty"`
 	AddressLine1 string `json:"address_line1,omitempty"`
@@ -187,7 +187,7 @@ type Address struct {
 	EmailAddress string `json:"email_address,omitempty"`
 }
 
-// Fields that can be added to a transaction on creation.
+// CustomFields that can be added to a transaction on creation.
 type CustomFields struct {
 	Ref1 string `json:"ref1,omitempty"`
 	Ref2 string `json:"ref2,omitempty"`
@@ -197,7 +197,7 @@ type CustomFields struct {
 }
 
 /*
-The struct you receive when you call GetTransaction().
+Transaction is the struct you receive when you call GetTransaction().
 To check if a transaction is approved you can call the method IsApproved()
 */
 type Transaction struct {
@@ -224,7 +224,7 @@ type Transaction struct {
 	Links            []Link       `json:"links,omitempty"`
 }
 
-// Test if a Payment was approved
+// IsApproved will test if a Payment was approved
 func (t *Transaction) IsApproved() bool {
 	if t.Approved == 1 {
 		return true
@@ -233,7 +233,7 @@ func (t *Transaction) IsApproved() bool {
 }
 
 /*
-An adjustment to the payment, often a return or void.
+Adjustment to a payment, often a return or void.
 */
 type Adjustment struct {
 	Id          int     `json:"id,omitempty"`
@@ -247,7 +247,7 @@ type Adjustment struct {
 }
 
 /*
-Links for http access for returns and voids. Not useful with
+Link for http access for returns and voids. Not useful with
 the SDK be here none the less.
 */
 type Link struct {
@@ -256,7 +256,7 @@ type Link struct {
 	Method string `json:"method,omitempty"`
 }
 
-// The response from a successful transaction. Some fields might be empty.
+// PaymentResponse is the response from a successful transaction. Some fields might be empty.
 // To check if a transaction is approved you can call the method IsApproved().
 type PaymentResponse struct {
 	Approved int    `json:"approved,string"`
@@ -305,7 +305,7 @@ type PaymentResponse struct {
 //	]
 //}
 
-// Test if a Payment was approved
+// IsApproved will test if a Payment was approved
 func (t *PaymentResponse) IsApproved() bool {
 	if t.Approved == 1 {
 		return true
