@@ -1,4 +1,3 @@
-// beanstream project beanstream.go
 package beanstream
 
 import ()

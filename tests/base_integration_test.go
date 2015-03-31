@@ -3,8 +3,8 @@
 package tests
 
 import (
-	"beanstream"
-	"beanstream/paymentMethods"
+	beanstream "github.com/Beanstream-DRWP/beanstream-go"
+	"github.com/Beanstream-DRWP/beanstream-go/paymentMethods"
 )
 
 func createGateway() beanstream.Gateway {
@@ -21,10 +21,10 @@ func createGateway() beanstream.Gateway {
 }
 
 func createCardRequest() beanstream.PaymentRequest {
-	return beanstream.PaymentRequest{
+	request := beanstream.PaymentRequest{
 		PaymentMethod: paymentMethods.CARD,
 		OrderNumber:   beanstream.Util_randOrderId(6),
-		Amount:        79.99,
+		Amount:        12.99,
 		Card: beanstream.CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
@@ -32,4 +32,5 @@ func createCardRequest() beanstream.PaymentRequest {
 			ExpiryYear:  "19",
 			Cvd:         "123",
 			Complete:    true}}
+	return request
 }

@@ -1,7 +1,5 @@
-// beanstream project doc.go
-
 /*
-The beanstream package supplies the 3 APIs for processing payments:
+Package beanstream supplies the 3 APIs for processing payments:
 	PaymentsAPI
 	ProfilesAPI
 	ReportingAPI

@@ -1,8 +1,8 @@
 package beanstream
 
 import (
-	"beanstream/httpMethods"
 	"fmt"
+	"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
 	"strings"
 	"time"
 )

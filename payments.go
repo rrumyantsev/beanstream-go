@@ -1,9 +1,8 @@
 package beanstream
 
 import (
-	"beanstream/httpMethods"
-	//"beanstream/paymentMethods"
 	"fmt"
+	"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
 	"time"
 )
 
@@ -56,8 +55,9 @@ func (api PaymentsAPI) CompletePayment(transId string, amount float32) (*Payment
 	return pr, nil
 }
 
-// VoidPayment cancels a payment for some or all of the original amount.
+// VoidPayment cancels a payment for all of the original amount.
 // In order to void a payment you must not wait too long.
+// The amount must equal the original amount.
 func (api PaymentsAPI) VoidPayment(transId string, amount float32) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + voidUrl
 	url = fmt.Sprintf(url, transId)

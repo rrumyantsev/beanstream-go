@@ -3,7 +3,7 @@
 package tests
 
 import (
-	"beanstream"
+	beanstream "github.com/Beanstream-DRWP/beanstream-go"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

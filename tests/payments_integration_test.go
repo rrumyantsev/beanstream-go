@@ -3,8 +3,8 @@
 package tests
 
 import (
-	"beanstream"
-	"beanstream/paymentMethods"
+	beanstream "github.com/Beanstream-DRWP/beanstream-go"
+	"github.com/Beanstream-DRWP/beanstream-go/paymentMethods"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -26,7 +26,7 @@ func TestIntegration_Payments_MakePayment(t *testing.T) {
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)
 	assert.NotNil(t, res, "Result was nil")
-	assert.Equal(t, 1, res.IsApproved())
+	assert.Equal(t, true, res.IsApproved())
 	assert.Equal(t, "P", res.Type)
 }
 
@@ -90,7 +90,7 @@ func TestIntegration_Payments_PreAuthComplete(t *testing.T) {
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "PA", res.Type)
 
-	res2, err2 := gateway.Payments().CompletePayment(res.ID, 24.67)
+	res2, err2 := gateway.Payments().CompletePayment(res.ID, 5.67)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)
@@ -106,7 +106,7 @@ func TestIntegration_Payments_Void(t *testing.T) {
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "P", res.Type)
 
-	res2, err2 := gateway.Payments().VoidPayment(res.ID, 79.99)
+	res2, err2 := gateway.Payments().VoidPayment(res.ID, 12.99)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)
@@ -122,7 +122,7 @@ func TestIntegration_Payments_Return(t *testing.T) {
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "P", res.Type)
 
-	res2, err2 := gateway.Payments().ReturnPayment(res.ID, 55.00)
+	res2, err2 := gateway.Payments().ReturnPayment(res.ID, 12.00)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)

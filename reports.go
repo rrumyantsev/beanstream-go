@@ -1,8 +1,8 @@
 package beanstream
 
 import (
-	"beanstream/httpMethods"
 	"fmt"
+	"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
 	"strconv"
 	"time"
 )
@@ -25,6 +25,11 @@ Finally you can supply zero or more search Criteria. These Criteria are ANDed to
 
 Criteria have 3 parameters: field, operator, and value. For details on these refer to the
 Criteria struct's documentation.
+
+For paging just one row, use the values: 1, 2.
+Paging index starts inclusively at the first number and non-inclusively at the 2nd number:
+[start,end).
+The lowest paging index number is 1.
 */
 func (api ReportsAPI) Query(startTime time.Time, endTime time.Time, startRow int, endRow int, criteria ...Criteria) ([]TransactionRecord, error) {
 	url := api.Config.BaseUrl() + reportsBaseUrl

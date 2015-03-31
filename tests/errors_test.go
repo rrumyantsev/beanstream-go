@@ -3,8 +3,7 @@
 package tests
 
 import (
-	"beanstream"
-	//"fmt"
+	beanstream "github.com/Beanstream-DRWP/beanstream-go"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"

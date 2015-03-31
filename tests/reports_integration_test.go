@@ -3,12 +3,11 @@
 package tests
 
 import (
-	"beanstream"
-	"beanstream/fields"
-	"beanstream/operators"
 	"fmt"
+	beanstream "github.com/Beanstream-DRWP/beanstream-go"
+	"github.com/Beanstream-DRWP/beanstream-go/fields"
+	"github.com/Beanstream-DRWP/beanstream-go/operators"
 	"github.com/stretchr/testify/assert"
-	//"strings"
 	"strconv"
 	"testing"
 	"time"
@@ -96,14 +95,16 @@ func TestIntegration_Reports_QueryCriteriaStringEquals(t *testing.T) {
 	assert.Nil(t, err2)
 	assert.NotNil(t, trans2)
 
-	startTime := time.Now().Add(-1 * time.Minute)
-	endTime := time.Now().Add(1 * time.Minute)
+	startTime := time.Now().Add(-1 * time.Hour)
+	endTime := time.Now().Add(1 * time.Hour)
+
+	fmt.Printf("Searching for order number:\n", orderNum)
 
 	criteria1 := beanstream.Criteria{
 		fields.OrderNumber,
 		operators.Equals,
 		orderNum}
-	res, err3 := gateway.Reports().Query(startTime, endTime, 1, 1, criteria1)
+	res, err3 := gateway.Reports().Query(startTime, endTime, 1, 2, criteria1)
 	assert.NotNil(t, res)
 	assert.Nil(t, err3)
 	fmt.Printf("Report: %v", res)
