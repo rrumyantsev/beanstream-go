@@ -1,7 +1,6 @@
 package beanstream
 
 import (
-	//"fmt"
 	"math/rand"
 	"strconv"
 	"time"
