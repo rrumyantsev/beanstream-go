@@ -1,7 +1,8 @@
 package beanstream
 
 import (
-	"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
+	//"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
+	"beanstream/httpMethods"
 )
 
 const url = "https://www.beanstream.com/scripts/tokenization/tokens"
