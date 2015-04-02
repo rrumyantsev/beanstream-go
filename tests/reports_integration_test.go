@@ -28,7 +28,7 @@ func TestIntegration_Reports_TimeQuery(t *testing.T) {
 	res, err2 := gateway.Reports().Query(startTime, endTime, 1, 1000)
 	assert.NotNil(t, res)
 	assert.Nil(t, err2)
-	fmt.Printf("Report: %v", res)
+	//fmt.Printf("Report: %v", res)
 	assert.True(t, len(res) > 0)
 	found := false
 	for _, r := range res {
@@ -66,7 +66,7 @@ func TestIntegration_Reports_QueryCriteria(t *testing.T) {
 	res, err3 := gateway.Reports().Query(startTime, endTime, 1, 10, criteria1)
 	assert.NotNil(t, res)
 	assert.Nil(t, err3)
-	fmt.Printf("Report: %v", res)
+	//fmt.Printf("Report: %v", res)
 	assert.True(t, len(res) > 0)
 	found := false
 	for _, r := range res {
