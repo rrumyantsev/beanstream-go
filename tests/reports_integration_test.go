@@ -22,8 +22,8 @@ func TestIntegration_Reports_TimeQuery(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, trans)
 
-	startTime := time.Now().Add(-1 * time.Minute)
-	endTime := time.Now().Add(1 * time.Minute)
+	startTime := time.Now().AddDate(0, 0, -1)
+	endTime := time.Now().AddDate(0, 0, 1)
 
 	res, err2 := gateway.Reports().Query(startTime, endTime, 1, 1000)
 	assert.NotNil(t, res)
@@ -56,8 +56,8 @@ func TestIntegration_Reports_QueryCriteria(t *testing.T) {
 	assert.Nil(t, err2)
 	assert.NotNil(t, trans2)
 
-	startTime := time.Now().Add(-1 * time.Minute)
-	endTime := time.Now().Add(1 * time.Minute)
+	startTime := time.Now().AddDate(0, 0, -1)
+	endTime := time.Now().AddDate(0, 0, 1)
 
 	criteria1 := beanstream.Criteria{
 		fields.Amount,
@@ -95,8 +95,8 @@ func TestIntegration_Reports_QueryCriteriaStringEquals(t *testing.T) {
 	assert.Nil(t, err2)
 	assert.NotNil(t, trans2)
 
-	startTime := time.Now().Add(-24 * time.Hour)
-	endTime := time.Now().Add(24 * time.Hour)
+	startTime := time.Now().AddDate(0, 0, -1)
+	endTime := time.Now().AddDate(0, 0, 1)
 
 	fmt.Printf("Searching for order number:\n", orderNum)
 
