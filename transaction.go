@@ -13,8 +13,8 @@ import (
 func ProcessBody(httpMethod string, url string, merchId string, apiKey string, data interface{}, responseType interface{}) (interface{}, error) {
 
 	jsonData, _ := json.Marshal(data)
-	fmt.Println("--> Request: ", string(jsonData))
-	fmt.Println("Url: ", url)
+	//fmt.Println("--> Request: ", string(jsonData))
+	//fmt.Println("Url: ", url)
 	passcode := GenerateAuthCode(merchId, apiKey)
 	req, err := http.NewRequest(httpMethod, url, bytes.NewBuffer(jsonData))
 	req.Header.Set("Authorization", "Passcode "+passcode)
@@ -28,7 +28,7 @@ func ProcessBody(httpMethod string, url string, merchId string, apiKey string, d
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("<-- Response:", string(body))
+	//fmt.Println("<-- Response:", string(body))
 	fmt.Println("response Status:", resp.Status)
 
 	// handle errors
@@ -65,8 +65,8 @@ func handleError(resp *http.Response, body []byte) error {
 
 func Process(httpMethod string, url string, merchId string, apiKey string, responseType interface{}) (interface{}, error) {
 
-	fmt.Println("--> Request ")
-	fmt.Println("Url: ", url)
+	//fmt.Println("--> Request ")
+	//fmt.Println("Url: ", url)
 	passcode := GenerateAuthCode(merchId, apiKey)
 	req, err := http.NewRequest(httpMethod, url, nil)
 	req.Header.Set("Authorization", "Passcode "+passcode)
@@ -80,7 +80,7 @@ func Process(httpMethod string, url string, merchId string, apiKey string, respo
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("<-- Response:", string(body))
+	//fmt.Println("<-- Response:", string(body))
 	fmt.Println("response Status:", resp.Status)
 
 	// handle errors
