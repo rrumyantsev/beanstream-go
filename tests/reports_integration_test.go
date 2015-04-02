@@ -95,8 +95,8 @@ func TestIntegration_Reports_QueryCriteriaStringEquals(t *testing.T) {
 	assert.Nil(t, err2)
 	assert.NotNil(t, trans2)
 
-	startTime := time.Now().Add(-1 * time.Hour)
-	endTime := time.Now().Add(1 * time.Hour)
+	startTime := time.Now().Add(-4 * time.Hour)
+	endTime := time.Now().Add(2 * time.Hour)
 
 	fmt.Printf("Searching for order number:\n", orderNum)
 
@@ -107,7 +107,7 @@ func TestIntegration_Reports_QueryCriteriaStringEquals(t *testing.T) {
 	res, err3 := gateway.Reports().Query(startTime, endTime, 1, 2, criteria1)
 	assert.NotNil(t, res)
 	assert.Nil(t, err3)
-	fmt.Printf("Report: %v", res)
+	//fmt.Printf("Report: %v", res)
 	assert.True(t, len(res) > 0)
 	found := false
 	for _, r := range res {
