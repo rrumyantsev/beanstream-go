@@ -95,8 +95,8 @@ func TestIntegration_Reports_QueryCriteriaStringEquals(t *testing.T) {
 	assert.Nil(t, err2)
 	assert.NotNil(t, trans2)
 
-	startTime := time.Now().Add(-4 * time.Hour)
-	endTime := time.Now().Add(2 * time.Hour)
+	startTime := time.Now().Add(-24 * time.Hour)
+	endTime := time.Now().Add(24 * time.Hour)
 
 	fmt.Printf("Searching for order number:\n", orderNum)
 
