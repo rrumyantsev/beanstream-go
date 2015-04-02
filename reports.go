@@ -46,7 +46,7 @@ func (api ReportsAPI) Query(startTime time.Time, endTime time.Time, startRow int
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("GetCard result: %T %v\n", res, res)
+
 	pr := res.(*RecordsResult)
 	for _, r := range pr.Records {
 		r.DateTime = AsDate(r.dateTime, api.Config)
