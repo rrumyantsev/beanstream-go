@@ -1,16 +1,15 @@
 // +build integration
 
-package tests
+package beanstream
 
 import (
 	"fmt"
-	beanstream "github.com/Beanstream-DRWP/beanstream-go"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestIntegration_Legato_TokenizeCard(t *testing.T) {
-	res, err := beanstream.LegatoTokenizeCard(
+	res, err := LegatoTokenizeCard(
 		"5100000010001004",
 		"11",
 		"19",

@@ -1,9 +1,8 @@
 // +build integration
 
-package tests
+package beanstream
 
 import (
-	beanstream "github.com/Beanstream-DRWP/beanstream-go"
 	"github.com/Beanstream-DRWP/beanstream-go/paymentMethods"
 	"github.com/stretchr/testify/assert"
 	"strings"
@@ -12,11 +11,11 @@ import (
 
 func TestIntegration_Payments_MakePayment(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
+	request := PaymentRequest{
 		PaymentMethod: paymentMethods.CARD,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        12.99,
-		Card: beanstream.CreditCard{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
@@ -30,20 +29,44 @@ func TestIntegration_Payments_MakePayment(t *testing.T) {
 	assert.Equal(t, "P", res.Type)
 }
 
+func TestIntegration_Payments_MakePaymentDefaultConfig(t *testing.T) {
+	config := DefaultConfig()
+	config.MerchantId = "300200578"
+	config.PaymentsApiKey = "4BaD82D9197b4cc4b70a221911eE9f70"
+	config.ProfilesApiKey = "D97D3BE1EE964A6193D17A571D9FBC80"
+	config.ReportingApiKey = "4e6Ff318bee64EA391609de89aD4CF5d"
+
+	gateway := Gateway{config}
+	request := PaymentRequest{
+		PaymentMethod: paymentMethods.CARD,
+		OrderNumber:   Util_randOrderId(6),
+		Amount:        12.99,
+		Card: CreditCard{
+			Name:        "John Doe",
+			Number:      "5100000010001004",
+			ExpiryMonth: "11",
+			ExpiryYear:  "19",
+			Cvd:         "123",
+			Complete:    true}}
+	res, err := gateway.Payments().MakePayment(request)
+	assert.Nil(t, err, "Unexpected error occurred.", err)
+	assert.NotNil(t, res, "Result was nil")
+}
+
 func TestIntegration_Payments_MakePaymentFullDetails(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
+	request := PaymentRequest{
 		PaymentMethod: paymentMethods.CARD,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        12.99,
-		Card: beanstream.CreditCard{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123",
 			Complete:    true},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"123 Fake St.",
 			"suite 3",
@@ -53,7 +76,7 @@ func TestIntegration_Payments_MakePaymentFullDetails(t *testing.T) {
 			"V8T4M3",
 			"12505550123",
 			"test@example.com"},
-		ShippingAddress: beanstream.Address{
+		ShippingAddress: Address{
 			"John Doe",
 			"456 Jinglepot Rd.",
 			"",
@@ -66,7 +89,7 @@ func TestIntegration_Payments_MakePaymentFullDetails(t *testing.T) {
 		Comment:    "a comment",
 		Language:   "ENG",
 		CustomerIp: "127.0.0.1",
-		Custom: beanstream.CustomFields{
+		Custom: CustomFields{
 			"ref1 something",
 			"ref2 something",
 			"ref3 something",
@@ -142,7 +165,7 @@ func TestIntegration_Payments_ReturnError(t *testing.T) {
 	res2, err2 := gateway.Payments().ReturnPayment(res.ID, 105.00)
 	assert.Nil(t, res2, "Did not expect a proper result", res2)
 	assert.NotNil(t, err2, "Error was nil and shouldn't have been")
-	bicError := err2.(*beanstream.BeanstreamApiException)
+	bicError := err2.(*BeanstreamApiException)
 	assert.True(t, strings.Contains(bicError.Error(), "InvalidRequestException"), "Error is not an InvalidRequestException")
 	assert.Equal(t, 194, bicError.Code)
 	assert.Equal(t, 2, bicError.Category)
@@ -150,7 +173,7 @@ func TestIntegration_Payments_ReturnError(t *testing.T) {
 
 func TestIntegration_Payments_Token(t *testing.T) {
 	// step 1: get the token
-	token, err := beanstream.LegatoTokenizeCard(
+	token, err := LegatoTokenizeCard(
 		"5100000010001004",
 		"11",
 		"19",
@@ -161,11 +184,11 @@ func TestIntegration_Payments_Token(t *testing.T) {
 
 	// step 2: make the purchase
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
+	request := PaymentRequest{
 		PaymentMethod: paymentMethods.TOKEN,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        15.99,
-		Token: beanstream.Token{
+		Token: Token{
 			token,
 			"John Doe",
 			true}}
@@ -179,7 +202,7 @@ func TestIntegration_Payments_Token(t *testing.T) {
 
 func TestIntegration_Payments_TokenPreAuth(t *testing.T) {
 	// step 1: get the token
-	token, err := beanstream.LegatoTokenizeCard(
+	token, err := LegatoTokenizeCard(
 		"5100000010001004",
 		"11",
 		"19",
@@ -190,11 +213,11 @@ func TestIntegration_Payments_TokenPreAuth(t *testing.T) {
 
 	// step 2: make the purchase
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
+	request := PaymentRequest{
 		PaymentMethod: paymentMethods.TOKEN,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        50.00,
-		Token: beanstream.Token{
+		Token: Token{
 			token,
 			"John Doe",
 			false}} // pre-auth (complete=false)
@@ -213,9 +236,9 @@ func TestIntegration_Payments_TokenPreAuth(t *testing.T) {
 
 func TestIntegration_Payments_Cash(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
+	request := PaymentRequest{
 		PaymentMethod: paymentMethods.CASH,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        12.00}
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)
@@ -226,9 +249,9 @@ func TestIntegration_Payments_Cash(t *testing.T) {
 
 func TestIntegration_Payments_Cheque(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.PaymentRequest{
+	request := PaymentRequest{
 		PaymentMethod: paymentMethods.CHEQUE,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        15.01}
 	res, err := gateway.Payments().MakePayment(request) //returns a pointer to PaymentResponse
 	assert.Nil(t, err, "Unexpected error occurred.", err)

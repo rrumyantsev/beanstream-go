@@ -34,7 +34,7 @@ func (api PaymentsAPI) MakePayment(transaction interface{}) (*PaymentResponse, e
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("MakePayment result: %T %v\n", res, res)
+	//fmt.Printf("MakePayment result: %T %v\n", res, res)
 	pr := res.(*PaymentResponse)
 	pr.CreatedTime = AsDate(pr.created, api.Config)
 	return pr, nil

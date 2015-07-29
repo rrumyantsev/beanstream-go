@@ -1,10 +1,9 @@
 // +build integration
 
-package tests
+package beanstream
 
 import (
 	"fmt"
-	beanstream "github.com/Beanstream-DRWP/beanstream-go"
 	"github.com/Beanstream-DRWP/beanstream-go/paymentMethods"
 	"github.com/stretchr/testify/assert"
 	"strings"
@@ -13,14 +12,14 @@ import (
 
 func TestIntegration_Profiles_CreateProfile(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"123 Fake St.",
 			"suite 3",
@@ -46,14 +45,14 @@ func TestIntegration_Profiles_CreateProfile(t *testing.T) {
 
 func TestIntegration_Profiles_MakePayment(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"123 Fake St.",
 			"suite 3",
@@ -71,11 +70,11 @@ func TestIntegration_Profiles_MakePayment(t *testing.T) {
 	assert.NotNil(t, res.Id)
 	assert.NotEmpty(t, res.Id)
 
-	payment := beanstream.PaymentRequest{
+	payment := PaymentRequest{
 		PaymentMethod: paymentMethods.PROFILE,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        12.99,
-		Profile: beanstream.ProfilePayment{
+		Profile: ProfilePayment{
 			res.Id,
 			1,
 			true}}
@@ -93,7 +92,7 @@ func TestIntegration_Profiles_MakePayment(t *testing.T) {
 
 func TestIntegration_Profiles_CreateProfileFromToken(t *testing.T) {
 	// step 1: get the token
-	token, t_err := beanstream.LegatoTokenizeCard(
+	token, t_err := LegatoTokenizeCard(
 		"5100000010001004",
 		"11",
 		"19",
@@ -104,11 +103,11 @@ func TestIntegration_Profiles_CreateProfileFromToken(t *testing.T) {
 
 	// step 2: create the profile
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Token: beanstream.Token{
+	request := Profile{
+		Token: Token{
 			Name:  "John Doe",
 			Token: token},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"123 Fake St.",
 			"suite 3",
@@ -127,11 +126,11 @@ func TestIntegration_Profiles_CreateProfileFromToken(t *testing.T) {
 	assert.NotEmpty(t, res.Id)
 
 	// step 3: Make a payment
-	payment := beanstream.PaymentRequest{
+	payment := PaymentRequest{
 		PaymentMethod: paymentMethods.PROFILE,
-		OrderNumber:   beanstream.Util_randOrderId(6),
+		OrderNumber:   Util_randOrderId(6),
 		Amount:        14.99,
-		Profile: beanstream.ProfilePayment{
+		Profile: ProfilePayment{
 			res.Id,
 			1,
 			true},
@@ -143,7 +142,7 @@ func TestIntegration_Profiles_CreateProfileFromToken(t *testing.T) {
 	assert.Equal(t, "P", res2.Type)
 
 	// step 4: Make another payment
-	payment.OrderNumber = beanstream.Util_randOrderId(6)
+	payment.OrderNumber = Util_randOrderId(6)
 	payment.Amount = 1.89
 	payment.Comment = "A 2nd payment with the same token profile"
 	res3, err3 := gateway.Payments().MakePayment(payment)
@@ -160,14 +159,14 @@ func TestIntegration_Profiles_CreateProfileFromToken(t *testing.T) {
 
 func TestIntegration_Profiles_DeleteProfile(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"999 Fake St.",
 			"suite 3",
@@ -197,14 +196,14 @@ func TestIntegration_Profiles_DeleteProfile(t *testing.T) {
 func TestIntegration_Profiles_GetProfile(t *testing.T) {
 
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"123 Fake St.",
 			"suite 3",
@@ -226,14 +225,14 @@ func TestIntegration_Profiles_GetProfile(t *testing.T) {
 
 func TestIntegration_Profiles_UpdateProfile(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"123 Fake St.",
 			"suite 3",
@@ -274,14 +273,14 @@ func TestIntegration_Profiles_UpdateProfile(t *testing.T) {
 
 func TestIntegration_Profiles_GetCards(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"999 Fake St.",
 			"suite 3",
@@ -318,14 +317,14 @@ func TestIntegration_Profiles_GetCards(t *testing.T) {
 
 func TestIntegration_Profiles_AddCard(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"999 Fake St.",
 			"suite 3",
@@ -346,7 +345,7 @@ func TestIntegration_Profiles_AddCard(t *testing.T) {
 	assert.NotNil(t, profile)
 
 	// add a 2nd card
-	card2 := beanstream.CreditCard{
+	card2 := CreditCard{
 		Name:        "Jane Doe",
 		Number:      "4030000010001234",
 		ExpiryMonth: "03",
@@ -376,14 +375,14 @@ func TestIntegration_Profiles_AddCard(t *testing.T) {
 
 func TestIntegration_Profiles_DeleteCard(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"999 Fake St.",
 			"suite 3",
@@ -404,7 +403,7 @@ func TestIntegration_Profiles_DeleteCard(t *testing.T) {
 	assert.NotNil(t, profile)
 
 	// add a 2nd card
-	card2 := beanstream.CreditCard{
+	card2 := CreditCard{
 		Name:        "Jane Doe",
 		Number:      "4030000010001234",
 		ExpiryMonth: "03",
@@ -447,14 +446,14 @@ func TestIntegration_Profiles_DeleteCard(t *testing.T) {
 
 func TestIntegration_Profiles_UpdateCard(t *testing.T) {
 	gateway := createGateway()
-	request := beanstream.Profile{
-		Card: beanstream.CreditCard{
+	request := Profile{
+		Card: CreditCard{
 			Name:        "John Doe",
 			Number:      "5100000010001004",
 			ExpiryMonth: "11",
 			ExpiryYear:  "19",
 			Cvd:         "123"},
-		BillingAddress: beanstream.Address{
+		BillingAddress: Address{
 			"John Doe",
 			"999 Fake St.",
 			"suite 3",

@@ -1,4 +1,4 @@
-1) Checkout the source code from TODO
+1) Checkout the source code from Github
 
 2) Install Testify for unit testing
 Run:
@@ -16,13 +16,14 @@ Import 'testing' and 'testify/assert' in your test file:
 	)
 	
 If you are using LiteIDE you can add:
-	// +build unit	
+	// +build unit integration	
 
 to the top of your unit test files. Make SURE to add a blank line after that!!
 Then add 
--tags=unit
+-tags=unit integration
 to the TESTARGS settings parameter.
 
+The unit tests will now run during the unit and integration phases. Ie. all the time.
 	
 4) Write Integration tests
 If you are using LiteIDE then you will want to configure it to have a separate
@@ -31,5 +32,5 @@ integration test button.
 	b) add this custom tag:
 		<custom id="IntegrationTestArgs" name="INTEGRATIONTESTARGS" value="-v -tags=integration"/>
 	c) add this action tag:
-		<action id="TestIntegration" menu="Test" img="blue/test.png" key = "Ctrl+Shift+T" cmd="$(GO)" args="test $(INTEGRATIONTESTARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" takeall="true" navigate="true"/>
+		<action id="TestIntegration" menu="Test" img="blue/test.png" key = "Ctrl+Shift+T" cmd="$(GO)" args="test $(INTEGRATIONTESTARGS) ./..." save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" takeall="true" navigate="true"/>
 	d) save the file, close and re-open LiteIDE. You should see a TestIntegration button under T

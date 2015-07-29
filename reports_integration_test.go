@@ -1,10 +1,9 @@
 // +build integration
 
-package tests
+package beanstream
 
 import (
 	"fmt"
-	beanstream "github.com/Beanstream-DRWP/beanstream-go"
 	"github.com/Beanstream-DRWP/beanstream-go/fields"
 	"github.com/Beanstream-DRWP/beanstream-go/operators"
 	"github.com/stretchr/testify/assert"
@@ -59,7 +58,7 @@ func TestIntegration_Reports_QueryCriteria(t *testing.T) {
 	startTime := time.Now().AddDate(0, 0, -1)
 	endTime := time.Now().AddDate(0, 0, 1)
 
-	criteria1 := beanstream.Criteria{
+	criteria1 := Criteria{
 		fields.Amount,
 		operators.GreaterThanEqual,
 		"200.00"}
@@ -100,7 +99,7 @@ func TestIntegration_Reports_QueryCriteriaStringEquals(t *testing.T) {
 
 	fmt.Printf("Searching for order number:\n", orderNum)
 
-	criteria1 := beanstream.Criteria{
+	criteria1 := Criteria{
 		fields.OrderNumber,
 		operators.Equals,
 		orderNum}
