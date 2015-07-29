@@ -76,9 +76,9 @@ the operator as: operators.LessThan
 and the value as: "100"
 */
 type Criteria struct {
-	Field    int    `json:"card,omitempty"`
-	Operator string `json:"card,omitempty"`
-	Value    string `json:"card,omitempty"`
+	Field    int    `json:"field,omitempty"`
+	Operator string `json:"operator,omitempty"`
+	Value    string `json:"value,omitempty"`
 }
 
 // The query result that contains an array of Transaction records
