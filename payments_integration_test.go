@@ -113,7 +113,9 @@ func TestIntegration_Payments_PreAuthComplete(t *testing.T) {
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "PA", res.Type)
 
-	res2, err2 := gateway.Payments().CompletePayment(res.ID, 5.67)
+	request.Amount = 5.67 // lower the amount
+	request.Custom.Ref1 = "Gas purchase"
+	res2, err2 := gateway.Payments().CompletePayment(res.ID, request)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)
@@ -227,7 +229,8 @@ func TestIntegration_Payments_TokenPreAuth(t *testing.T) {
 	assert.Equal(t, 1, res.Approved)
 	assert.Equal(t, "PA", res.Type)
 
-	res2, err2 := gateway.Payments().CompletePayment(res.ID, 12.01)
+	request.Amount = 12.01
+	res2, err2 := gateway.Payments().CompletePayment(res.ID, request)
 	assert.Nil(t, err2, "Unexpected error occurred.", err2)
 	assert.NotNil(t, res2, "Result was nil")
 	assert.Equal(t, 1, res2.Approved)

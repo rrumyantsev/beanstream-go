@@ -20,7 +20,7 @@ func ProcessBody(httpMethod string, url string, merchId string, apiKey string, d
 	//fmt.Println("Url: ", url)
 	passcode := GenerateAuthCode(merchId, apiKey)
 	req, err := http.NewRequest(httpMethod, url, bytes.NewBuffer(jsonData))
-	fmt.Println("Authorization: " + passcode)
+	//fmt.Println("Authorization: " + passcode)
 	req.Header.Set("Authorization", "Passcode "+passcode)
 	req.Header.Set("Content-Type", "application/json")
 
@@ -33,7 +33,7 @@ func ProcessBody(httpMethod string, url string, merchId string, apiKey string, d
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	//fmt.Println("<-- Response:", string(body))
-	fmt.Println("response Status:", resp.Status)
+	//fmt.Println("response Status:", resp.Status)
 
 	// handle errors
 	if resp.StatusCode != 200 {
@@ -108,8 +108,8 @@ func ProcessMultiPart(httpMethod string, url string, merchId string, apiKey stri
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("<-- Response:", string(body))
-	fmt.Println("response Status:", resp.Status)
+	//fmt.Println("<-- Response:", string(body))
+	//fmt.Println("response Status:", resp.Status)
 
 	// handle errors
 	if resp.StatusCode != 200 {
@@ -160,8 +160,8 @@ func Process(httpMethod string, url string, merchId string, apiKey string, respo
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("<-- Response:", string(body))
-	fmt.Println("response Status:", resp.Status)
+	//fmt.Println("<-- Response:", string(body))
+	//fmt.Println("response Status:", resp.Status)
 
 	// handle errors
 	if resp.StatusCode != 200 {

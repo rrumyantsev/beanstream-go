@@ -27,7 +27,7 @@ Create a payment. Either a Credit Card, Profile, Cash, or Cheque payment request
 are just for your own record keeping.
 You must supply it a PaymentRequest that is defined in this package
 */
-func (api PaymentsAPI) MakePayment(transaction interface{}) (*PaymentResponse, error) {
+func (api PaymentsAPI) MakePayment(transaction PaymentRequest) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + paymentUrl
 	responseType := PaymentResponse{}
 	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, transaction, &responseType)
@@ -41,12 +41,11 @@ func (api PaymentsAPI) MakePayment(transaction interface{}) (*PaymentResponse, e
 }
 
 // Complete a pre-authorized payment for some or all of the pre-authorized amount.
-func (api PaymentsAPI) CompletePayment(transId string, amount float32) (*PaymentResponse, error) {
+func (api PaymentsAPI) CompletePayment(transId string, request PaymentRequest) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + completionUrl
 	url = fmt.Sprintf(url, transId)
 	responseType := PaymentResponse{}
-	req := completionRequest{amount}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, req, &responseType)
+	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, request, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +162,8 @@ type ProfilePayment struct {
 }
 
 type completionRequest struct {
-	Amount float32 `json:"amount"`
+	Amount float32      `json:"amount"`
+	Custom CustomFields `json:"custom"`
 }
 
 type voidRequest struct {

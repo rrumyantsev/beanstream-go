@@ -15,7 +15,7 @@ import (
 func TestIntegration_Reports_TimeQuery(t *testing.T) {
 	gateway := createGateway()
 	request := createCardRequest()
-
+	fmt.Println("======================= REPORTS ======================")
 	// make a test payment
 	trans, err := gateway.Payments().MakePayment(request)
 	assert.Nil(t, err)
