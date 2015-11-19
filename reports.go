@@ -135,6 +135,7 @@ type TransactionRecord struct {
 	Ref2             string  `json:"ref2,omitempty"`
 	Ref3             string  `json:"ref3,omitempty"`
 	Ref4             string  `json:"ref4,omitempty"`
+	Ref5             string  `json:"ref5,omitempty"`
 	ProductName      string  `json:"product_name,omitempty"`
 	ProductId        string  `json:"product_id,omitempty"`
 	CustomerCode     string  `json:"customer_code,omitempty"`

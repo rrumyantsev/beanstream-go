@@ -137,6 +137,25 @@ func (api ProfilesAPI) AddCard(profileId string, card CreditCard) (*ProfileRespo
 	return pr, nil
 }
 
+// AddTokenizedCard Add a tokenized card to a profile
+func (api ProfilesAPI) AddTokenizedCard(profileId string, cardholderName string, token string) (*ProfileResponse, error) {
+	url := api.Config.BaseUrl() + cardsBaseUrl
+	url = fmt.Sprintf(url, profileId)
+
+	t := Token{Token: token, Name: cardholderName}
+	//card := CreditCard{Number: token}
+	wrapper := tokenWrapper{Token: t}
+	responseType := ProfileResponse{}
+	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("AddCard result: %T %v\n", res, res)
+	pr := res.(*ProfileResponse)
+
+	return pr, nil
+}
+
 // UpdateCard Deletes a card from a profile
 func (api ProfilesAPI) DeleteCard(profileId string, cardId int) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + cardUrl
@@ -227,6 +246,11 @@ func (p *Profile) DeleteCard(pAPI ProfilesAPI, cardId int) (*ProfileResponse, er
 // used internally when adding a new card to a profile
 type cardWrapper struct {
 	Card CreditCard `json:"card"`
+}
+
+// used internally when adding a new tokenized card to a profile
+type tokenWrapper struct {
+	Token Token `json:"token"`
 }
 
 // ProfileResponse is the response from profile CRUD operations.
