@@ -1,5 +1,5 @@
 language: go
 
 script:
-  - go get -t ./...
+  - go get github.com/stretchr/testify
   - go test -v -tags=integration ./...
