@@ -1,4 +1,4 @@
-# Beanstream-GO [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/Beanstream-DRWP/beanstream-go) [![Build Status](https://travis-ci.org/Beanstream-DRWP/beanstream-go.svg?branch=master)](https://travis-ci.org/Beanstream-DRWP/beanstream-go)
+# Beanstream-GO [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/Beanstream/beanstream-go) [![Build Status](https://travis-ci.org/Beanstream/beanstream-go.svg?branch=master)](https://travis-ci.org/Beanstream/beanstream-go)
 Go lang SDK for processing payments through Beanstream
 
 The Go Lang SDK for Beanstream lets you take payments, save payment profiles, and run reports on your transactions. It's easy to get started, just follow the steps below
@@ -8,7 +8,7 @@ The Go Lang SDK for Beanstream lets you take payments, save payment profiles, an
 ### Step 1) Import the Code
 Import the project directly from Github:
 ```go
-import beanstream "github.com/Beanstream-DRWP/beanstream-go"
+import beanstream "github.com/Beanstream/beanstream-go"
 ```
 Run Go Get (or let your IDE do it)
 ```
@@ -19,8 +19,8 @@ go get
 
 ```go
   import (
-    beanstream "github.com/Beanstream-DRWP/beanstream-go"
-    "github.com/Beanstream-DRWP/beanstream-go/paymentMethods"
+    beanstream "github.com/Beanstream/beanstream-go"
+    "github.com/Beanstream/beanstream-go/paymentMethods"
   )
   ...
   config := beanstream.DefaultConfig()
@@ -52,7 +52,7 @@ If you want to help improve the project, follow the steps below to get your dev 
 
 ### 1) Checkout the source code from Github
 ```
-git clone https://github.com/Beanstream-DRWP/beanstream-go
+git clone https://github.com/Beanstream/beanstream-go
 ```
 
 ### 2) Install Testify for unit testing
