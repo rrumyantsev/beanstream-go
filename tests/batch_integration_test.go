@@ -3,9 +3,9 @@
 package tests
 
 import (
-	//beanstream "github.com/Beanstream-DRWP/beanstream-go"
+	//beanstream "github.com/Beanstream/beanstream-go"
 	//	"beanstream"
-	//"github.com/Beanstream-DRWP/beanstream-go/paymentMethods"
+	//"github.com/Beanstream/beanstream-go/paymentMethods"
 	//	"github.com/stretchr/testify/assert"
 	//"strings"
 	"testing"
