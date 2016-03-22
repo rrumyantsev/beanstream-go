@@ -4,8 +4,8 @@ package beanstream
 
 import (
 	"fmt"
-	"github.com/Beanstream-DRWP/beanstream-go/fields"
-	"github.com/Beanstream-DRWP/beanstream-go/operators"
+	"github.com/Beanstream/beanstream-go/fields"
+	"github.com/Beanstream/beanstream-go/operators"
 	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"

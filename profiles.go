@@ -2,7 +2,7 @@ package beanstream
 
 import (
 	"fmt"
-	"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
+	"github.com/Beanstream/beanstream-go/httpMethods"
 	"strings"
 	"time"
 )
@@ -156,7 +156,7 @@ func (api ProfilesAPI) AddTokenizedCard(profileId string, cardholderName string,
 	return pr, nil
 }
 
-// UpdateCard Deletes a card from a profile
+// DeleteCard Deletes a card from a profile
 func (api ProfilesAPI) DeleteCard(profileId string, cardId int) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + cardUrl
 	url = fmt.Sprintf(url, profileId, cardId)

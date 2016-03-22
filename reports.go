@@ -2,7 +2,7 @@ package beanstream
 
 import (
 	//"fmt"
-	"github.com/Beanstream-DRWP/beanstream-go/httpMethods"
+	"github.com/Beanstream/beanstream-go/httpMethods"
 	"strconv"
 	"time"
 )
