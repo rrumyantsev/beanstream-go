@@ -2,7 +2,7 @@ package beanstream
 
 import (
 	//"fmt"
-	"github.com/Beanstream/beanstream-go/httpMethods"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -42,7 +42,7 @@ func (api ReportsAPI) Query(startTime time.Time, endTime time.Time, startRow int
 		strconv.Itoa(endRow),
 		criteria}
 	responseType := RecordsResult{}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.ReportingApiKey, &q, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.ReportingApiKey, &q, &responseType)
 	if err != nil {
 		return nil, err
 	}

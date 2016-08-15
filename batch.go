@@ -5,7 +5,6 @@ This feature is not yet implemented!
 */
 
 import (
-	//"github.com/Beanstream/beanstream-go/httpMethods"
 	"time"
 )
 
@@ -24,7 +23,7 @@ func (api BatchAPI) MakeBatchPayment(batchCriteria BatchCriteria, batchFile stri
 
 	url := api.Config.BaseUrl() + batchUrl
 	responseType := PaymentResponse{}
-	res, err := ProcessMultiPart(httpMethods.POST, url, api.Config.MerchantId, api.Config.BatchApiKey, &responseType, batchCriteria, batchFile)
+	res, err := ProcessMultiPart(http.MethodPost, url, api.Config.MerchantId, api.Config.BatchApiKey, &responseType, batchCriteria, batchFile)
 	if err != nil {
 		return nil, err
 	}
