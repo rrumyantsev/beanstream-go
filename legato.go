@@ -1,8 +1,6 @@
 package beanstream
 
-import (
-	"github.com/Beanstream/beanstream-go/httpMethods"
-)
+import "net/http"
 
 const url = "https://www.beanstream.com/scripts/tokenization/tokens"
 
@@ -28,7 +26,7 @@ type legatoTokenResponse struct {
 func LegatoTokenizeCard(cardNumber string, expMo string, expYr string, cvd string) (string, error) {
 	req := legatoCardRequest{cardNumber, expMo, expYr, cvd}
 	responseType := legatoTokenResponse{}
-	res, err := ProcessBody(httpMethods.POST, url, "", "", req, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, "", "", req, &responseType)
 	if err != nil {
 		return "", err
 	}
