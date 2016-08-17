@@ -2,7 +2,7 @@ package beanstream
 
 import (
 	"fmt"
-	"github.com/Beanstream/beanstream-go/httpMethods"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -27,7 +27,7 @@ type ProfilesAPI struct {
 func (api ProfilesAPI) CreateProfile(profile Profile) (*ProfileResponse, error) {
 	url := api.Config.BaseUrl() + profilesBaseUrl
 	responseType := ProfileResponse{}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.ProfilesApiKey, profile, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.ProfilesApiKey, profile, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (api ProfilesAPI) GetProfile(profileId string) (*Profile, error) {
 	url = fmt.Sprintf(url, profileId)
 
 	responseType := Profile{}
-	res, err := Process(httpMethods.GET, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
+	res, err := Process(http.MethodGet, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (api ProfilesAPI) UpdateProfile(profile *Profile) (*ProfileResponse, error)
 	profile.Token = Token{}     // can only create a profile with a token, cannot update the token
 
 	responseType := ProfileResponse{}
-	res, err := ProcessBody(httpMethods.PUT, url, api.Config.MerchantId, api.Config.ProfilesApiKey, profile, &responseType)
+	res, err := ProcessBody(http.MethodPut, url, api.Config.MerchantId, api.Config.ProfilesApiKey, profile, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (api ProfilesAPI) DeleteProfile(profileId string) (*ProfileResponse, error)
 	url = fmt.Sprintf(url, profileId)
 
 	responseType := ProfileResponse{}
-	res, err := Process(httpMethods.DELETE, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
+	res, err := Process(http.MethodDelete, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (api ProfilesAPI) GetCards(profileId string) ([]CreditCard, error) {
 	url = fmt.Sprintf(url, profileId)
 
 	responseType := profileCardsResponse{}
-	res, err := Process(httpMethods.GET, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
+	res, err := Process(http.MethodGet, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (api ProfilesAPI) GetCard(profileId string, cardId int) (*CreditCard, error
 	url = fmt.Sprintf(url, profileId)
 
 	responseType := profileCardsResponse{}
-	res, err := Process(httpMethods.GET, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
+	res, err := Process(http.MethodGet, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (api ProfilesAPI) AddCard(profileId string, card CreditCard) (*ProfileRespo
 
 	wrapper := cardWrapper{card}
 	responseType := ProfileResponse{}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (api ProfilesAPI) AddTokenizedCard(profileId string, cardholderName string,
 	//card := CreditCard{Number: token}
 	wrapper := tokenWrapper{Token: t}
 	responseType := ProfileResponse{}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func (api ProfilesAPI) DeleteCard(profileId string, cardId int) (*ProfileRespons
 	url = fmt.Sprintf(url, profileId, cardId)
 
 	responseType := ProfileResponse{}
-	res, err := Process(httpMethods.DELETE, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
+	res, err := Process(http.MethodDelete, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func (api ProfilesAPI) UpdateCard(profileId string, card CreditCard) (*ProfileRe
 
 	wrapper := cardWrapper{card}
 	responseType := ProfileResponse{}
-	res, err := ProcessBody(httpMethods.PUT, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
+	res, err := ProcessBody(http.MethodPut, url, api.Config.MerchantId, api.Config.ProfilesApiKey, &wrapper, &responseType)
 	if err != nil {
 		return nil, err
 	}

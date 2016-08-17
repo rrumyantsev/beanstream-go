@@ -2,7 +2,7 @@ package beanstream
 
 import (
 	"fmt"
-	"github.com/Beanstream/beanstream-go/httpMethods"
+	"net/http"
 	"time"
 )
 
@@ -30,7 +30,7 @@ You must supply it a PaymentRequest that is defined in this package
 func (api PaymentsAPI) MakePayment(transaction PaymentRequest) (*PaymentResponse, error) {
 	url := api.Config.BaseUrl() + paymentUrl
 	responseType := PaymentResponse{}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, transaction, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.PaymentsApiKey, transaction, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (api PaymentsAPI) CompletePayment(transId string, request PaymentRequest) (
 	url := api.Config.BaseUrl() + completionUrl
 	url = fmt.Sprintf(url, transId)
 	responseType := PaymentResponse{}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, request, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.PaymentsApiKey, request, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (api PaymentsAPI) VoidPayment(transId string, amount float32) (*PaymentResp
 	url = fmt.Sprintf(url, transId)
 	responseType := PaymentResponse{}
 	req := voidRequest{amount}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, req, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.PaymentsApiKey, req, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (api PaymentsAPI) ReturnPayment(transId string, amount float32) (*PaymentRe
 	url = fmt.Sprintf(url, transId)
 	responseType := PaymentResponse{}
 	req := returnRequest{amount}
-	res, err := ProcessBody(httpMethods.POST, url, api.Config.MerchantId, api.Config.PaymentsApiKey, req, &responseType)
+	res, err := ProcessBody(http.MethodPost, url, api.Config.MerchantId, api.Config.PaymentsApiKey, req, &responseType)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (api PaymentsAPI) GetTransaction(transId string) (*Transaction, error) {
 	url = fmt.Sprintf(url, transId)
 
 	responseType := Transaction{}
-	res, err := Process(httpMethods.GET, url, api.Config.MerchantId, api.Config.PaymentsApiKey, &responseType)
+	res, err := Process(http.MethodGet, url, api.Config.MerchantId, api.Config.PaymentsApiKey, &responseType)
 	if err != nil {
 		return nil, err
 	}
