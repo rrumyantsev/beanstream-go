@@ -1,7 +1,9 @@
 # Beanstream-GO [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/Beanstream/beanstream-go) [![Build Status](https://travis-ci.org/Beanstream/beanstream-go.svg?branch=master)](https://travis-ci.org/Beanstream/beanstream-go)
 Go lang SDK for processing payments through Beanstream
 
-The Go Lang SDK for Beanstream lets you take payments, save payment profiles, and run reports on your transactions. It's easy to get started, just follow the steps below
+The Go Lang SDK for Beanstream lets you take payments, save payment profiles, and run reports on your transactions. It's easy to get started, just follow the steps below.
+
+The master version of this SDK requires GoLang 1.6+. There is a v1.4+ available on this [branch](https://github.com/Beanstream/beanstream-go/tree/golang-v1.4).
 
 # Get Started
 
