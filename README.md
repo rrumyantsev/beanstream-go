@@ -1,4 +1,4 @@
-# Beanstream-GO [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/Beanstream/beanstream-go) [![Build Status](https://travis-ci.org/Beanstream/beanstream-go.svg?branch=master)](https://travis-ci.org/Beanstream/beanstream-go)
+# Beanstream-GO ([Legacy](https://dev.na.bambora.com/docs/references/payment_SDKs/#legacy-sdk)) [![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/Beanstream/beanstream-go) [![Build Status](https://travis-ci.org/Beanstream/beanstream-go.svg?branch=master)](https://travis-ci.org/Beanstream/beanstream-go)
 Go lang SDK for processing payments through Beanstream
 
 The Go Lang SDK for Beanstream lets you take payments, save payment profiles, and run reports on your transactions. It's easy to get started, just follow the steps below.
@@ -102,4 +102,3 @@ c) add this action tag:
   <action id="TestIntegration" menu="Test" img="blue/test.png" key = "Ctrl+Shift+T" cmd="$(GO)" args="test $(INTEGRATIONTESTARGS) ./..." save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" takeall="true" navigate="true"/>
 ```
 d) save the file, close and re-open LiteIDE. You should see a TestIntegration button under T
-
